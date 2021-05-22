@@ -36,7 +36,7 @@ impl IIR2Coefficients {
         y
     }
 
-    pub fn lowpass(f0: f32, q_value: f32, _db_gain: f32, fs: f32) -> IIR2Coefficients {
+    pub fn lowpass(f0: f32, _db_gain: f32, q_value: f32, fs: f32) -> IIR2Coefficients {
         let f0 = f0.min(fs * 0.5);
         let a = 1.0;
         let g = (PI * f0 / fs).tan();
@@ -61,7 +61,7 @@ impl IIR2Coefficients {
             fs,
         }
     }
-    pub fn highpass(f0: f32, q_value: f32, _db_gain: f32, fs: f32) -> IIR2Coefficients {
+    pub fn highpass(f0: f32, _db_gain: f32, q_value: f32, fs: f32) -> IIR2Coefficients {
         let f0 = f0.min(fs * 0.5);
         let a = 1.0;
         let g = (PI * f0 / fs).tan();
@@ -86,7 +86,7 @@ impl IIR2Coefficients {
             fs,
         }
     }
-    pub fn bandpass(f0: f32, q_value: f32, _db_gain: f32, fs: f32) -> IIR2Coefficients {
+    pub fn bandpass(f0: f32, _db_gain: f32, q_value: f32, fs: f32) -> IIR2Coefficients {
         let f0 = f0.min(fs * 0.5);
         let a = 1.0;
         let g = (PI * f0 / fs).tan();
@@ -111,7 +111,7 @@ impl IIR2Coefficients {
             fs,
         }
     }
-    pub fn notch(f0: f32, q_value: f32, _db_gain: f32, fs: f32) -> IIR2Coefficients {
+    pub fn notch(f0: f32, _db_gain: f32, q_value: f32, fs: f32) -> IIR2Coefficients {
         let f0 = f0.min(fs * 0.5);
         let a = 1.0;
         let g = (PI * f0 / fs).tan();
@@ -136,7 +136,7 @@ impl IIR2Coefficients {
             fs,
         }
     }
-    pub fn allpass(f0: f32, q_value: f32, _db_gain: f32, fs: f32) -> IIR2Coefficients {
+    pub fn allpass(f0: f32, _db_gain: f32, q_value: f32, fs: f32) -> IIR2Coefficients {
         let f0 = f0.min(fs * 0.5);
         let a = 1.0;
         let g = (PI * f0 / fs).tan();
@@ -161,7 +161,7 @@ impl IIR2Coefficients {
             fs,
         }
     }
-    pub fn lowshelf(f0: f32, q_value: f32, db_gain: f32, fs: f32) -> IIR2Coefficients {
+    pub fn lowshelf(f0: f32, db_gain: f32, q_value: f32, fs: f32) -> IIR2Coefficients {
         let f0 = f0.min(fs * 0.5);
         let a = 10.0f32.powf(db_gain / 40.0);
         let g = (PI * f0 / fs).tan() / a.sqrt();
@@ -186,7 +186,7 @@ impl IIR2Coefficients {
             fs,
         }
     }
-    pub fn highshelf(f0: f32, q_value: f32, db_gain: f32, fs: f32) -> IIR2Coefficients {
+    pub fn highshelf(f0: f32, db_gain: f32, q_value: f32, fs: f32) -> IIR2Coefficients {
         let f0 = f0.min(fs * 0.5);
         let a = 10.0f32.powf(db_gain / 40.0);
         let g = (PI * f0 / fs).tan() * a.sqrt();
@@ -211,7 +211,7 @@ impl IIR2Coefficients {
             fs,
         }
     }
-    pub fn bell(f0: f32, q_value: f32, db_gain: f32, fs: f32) -> IIR2Coefficients {
+    pub fn bell(f0: f32, db_gain: f32, q_value: f32, fs: f32) -> IIR2Coefficients {
         let f0 = f0.min(fs * 0.5);
         let a = 10.0f32.powf(db_gain / 40.0);
         let g = (PI * f0 / fs).tan();
@@ -266,7 +266,7 @@ impl IIR2 {
         self.coeffs.m0 * input + self.coeffs.m1 * v1 + self.coeffs.m2 * v2
     }
 
-    pub fn update_coefficients(&mut self, new_coefficients: IIR2Coefficients) {
+    pub fn update(&mut self, new_coefficients: IIR2Coefficients) {
         self.coeffs = new_coefficients;
     }
 }

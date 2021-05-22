@@ -152,7 +152,7 @@ impl IIR1 {
         self.coeffs.m0 * input + self.coeffs.m1 * v2
     }
 
-    pub fn update_coefficients(&mut self, new_coefficients: IIR1Coefficients) {
+    pub fn update(&mut self, new_coefficients: IIR1Coefficients) {
         self.coeffs = new_coefficients;
     }
 }
