@@ -43,7 +43,7 @@ impl IIR1Coefficients {
     }
 
     pub fn lowpass(f0: f32, _db_gain: f32, fs: f32) -> IIR1Coefficients {
-        let f0 = f0.min(fs * 0.0_5);
+        let f0 = f0.min(fs * 0.5);
         let a = 1.0;
         let g = (PI * f0 / fs).tan();
         let a1 = g / (1.0 + g);
@@ -60,7 +60,7 @@ impl IIR1Coefficients {
     }
 
     pub fn highpass(f0: f32, _db_gain: f32, fs: f32) -> IIR1Coefficients {
-        let f0 = f0.min(fs * 0.0_5);
+        let f0 = f0.min(fs * 0.5);
         let a = 1.0;
         let g = (PI * f0 / fs).tan();
         let a1 = g / (1.0 + g);
@@ -77,7 +77,7 @@ impl IIR1Coefficients {
     }
 
     pub fn allpass(f0: f32, _db_gain: f32, fs: f32) -> IIR1Coefficients {
-        let f0 = f0.min(fs * 0.0_5);
+        let f0 = f0.min(fs * 0.5);
         let a = 1.0;
         let g = (PI * f0 / fs).tan();
         let a1 = g / (1.0 + g);
@@ -94,7 +94,7 @@ impl IIR1Coefficients {
     }
 
     pub fn lowshelf(f0: f32, db_gain: f32, fs: f32) -> IIR1Coefficients {
-        let f0 = f0.min(fs * 0.0_5);
+        let f0 = f0.min(fs * 0.5);
         let a = 1.0f32.powf(db_gain / 20.0);
         let g = (PI * f0 / fs).tan() / (a).sqrt();
         let a1 = g / (1.0 + g);
@@ -111,7 +111,7 @@ impl IIR1Coefficients {
     }
 
     pub fn highshelf(f0: f32, db_gain: f32, fs: f32) -> IIR1Coefficients {
-        let f0 = f0.min(fs * 0.0_5);
+        let f0 = f0.min(fs * 0.5);
         let a = 1.0f32.powf(db_gain / 20.0);
         let g = (PI * f0 / fs).tan() * (a).sqrt();
         let a1 = g / (1.0 + g);
