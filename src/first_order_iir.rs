@@ -181,6 +181,6 @@ mod tests {
             audio[i] = filter.process(audio[i]);
         }
 
-        assert_eq!(audio[500], -0.12890625)
+        assert_eq!(audio[500], -0.4137441)
     }
 }
