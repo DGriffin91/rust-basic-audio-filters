@@ -25,7 +25,7 @@ let f0 = 1000.0;
 let db_gain = 6.0;
 let q_value = 1.0;
 
-let coeffs = IIR2Coefficients::highshelf(f0, q_value, db_gain, fs);
+let coeffs = IIR2Coefficients::highshelf(f0, db_gain, q_value, fs);
 
 let mut filter = IIR2::from(coeffs);
 
