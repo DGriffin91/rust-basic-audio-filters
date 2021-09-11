@@ -1,27 +1,27 @@
-use std::f32::consts::{PI, TAU};
+use std::f64::consts::{PI, TAU};
 
 use num_complex::Complex;
 
 #[derive(Copy, Clone, Debug)]
 pub struct IIR2Coefficients {
-    pub a: f32,
-    pub g: f32,
-    pub gpow2: f32,
-    pub k: f32,
-    pub a1: f32,
-    pub a2: f32,
-    pub a3: f32,
-    pub m0: f32,
-    pub m1: f32,
-    pub m2: f32,
+    pub a: f64,
+    pub g: f64,
+    pub gpow2: f64,
+    pub k: f64,
+    pub a1: f64,
+    pub a2: f64,
+    pub a3: f64,
+    pub m0: f64,
+    pub m1: f64,
+    pub m2: f64,
 }
 
 impl IIR2Coefficients {
-    pub fn get_bode_sample(self, frequency_hz: f32, sample_rate_hz: f32) -> Complex<f32> {
+    pub fn get_bode_sample(self, frequency_hz: f64, sample_rate_hz: f64) -> Complex<f64> {
         //Use y.norm() for amplitude and y.arg().to_degrees() for phase. Add to combine phase.
 
         let z = -TAU * frequency_hz / sample_rate_hz;
-        let z = z.cos() + z.sin() * Complex::<f32>::new(0.0, 1.0);
+        let z = z.cos() + z.sin() * Complex::<f64>::new(0.0, 1.0);
         let zpow2 = z * z;
 
         let denominator = (self.gpow2 + self.g * self.k + 1.0)
@@ -36,10 +36,10 @@ impl IIR2Coefficients {
     }
 
     pub fn lowpass(
-        cutoff_hz: f32,
-        _gain_db: f32,
-        q_value: f32,
-        sample_rate_hz: f32,
+        cutoff_hz: f64,
+        _gain_db: f64,
+        q_value: f64,
+        sample_rate_hz: f64,
     ) -> IIR2Coefficients {
         let cutoff_hz = cutoff_hz.min(sample_rate_hz * 0.5);
         let a = 1.0;
@@ -65,10 +65,10 @@ impl IIR2Coefficients {
         }
     }
     pub fn highpass(
-        cutoff_hz: f32,
-        _gain_db: f32,
-        q_value: f32,
-        sample_rate_hz: f32,
+        cutoff_hz: f64,
+        _gain_db: f64,
+        q_value: f64,
+        sample_rate_hz: f64,
     ) -> IIR2Coefficients {
         let cutoff_hz = cutoff_hz.min(sample_rate_hz * 0.5);
         let a = 1.0;
@@ -94,10 +94,10 @@ impl IIR2Coefficients {
         }
     }
     pub fn bandpass(
-        cutoff_hz: f32,
-        _gain_db: f32,
-        q_value: f32,
-        sample_rate_hz: f32,
+        cutoff_hz: f64,
+        _gain_db: f64,
+        q_value: f64,
+        sample_rate_hz: f64,
     ) -> IIR2Coefficients {
         let cutoff_hz = cutoff_hz.min(sample_rate_hz * 0.5);
         let a = 1.0;
@@ -123,10 +123,10 @@ impl IIR2Coefficients {
         }
     }
     pub fn notch(
-        cutoff_hz: f32,
-        _gain_db: f32,
-        q_value: f32,
-        sample_rate_hz: f32,
+        cutoff_hz: f64,
+        _gain_db: f64,
+        q_value: f64,
+        sample_rate_hz: f64,
     ) -> IIR2Coefficients {
         let cutoff_hz = cutoff_hz.min(sample_rate_hz * 0.5);
         let a = 1.0;
@@ -152,10 +152,10 @@ impl IIR2Coefficients {
         }
     }
     pub fn allpass(
-        cutoff_hz: f32,
-        _gain_db: f32,
-        q_value: f32,
-        sample_rate_hz: f32,
+        cutoff_hz: f64,
+        _gain_db: f64,
+        q_value: f64,
+        sample_rate_hz: f64,
     ) -> IIR2Coefficients {
         let cutoff_hz = cutoff_hz.min(sample_rate_hz * 0.5);
         let a = 1.0;
@@ -181,13 +181,13 @@ impl IIR2Coefficients {
         }
     }
     pub fn lowshelf(
-        cutoff_hz: f32,
-        gain_db: f32,
-        q_value: f32,
-        sample_rate_hz: f32,
+        cutoff_hz: f64,
+        gain_db: f64,
+        q_value: f64,
+        sample_rate_hz: f64,
     ) -> IIR2Coefficients {
         let cutoff_hz = cutoff_hz.min(sample_rate_hz * 0.5);
-        let a = 10.0f32.powf(gain_db / 40.0);
+        let a = 10.0f64.powf(gain_db / 40.0);
         let g = (PI * cutoff_hz / sample_rate_hz).tan() / a.sqrt();
         let k = 1.0 / q_value;
         let a1 = 1.0 / (1.0 + g * (g + k));
@@ -210,13 +210,13 @@ impl IIR2Coefficients {
         }
     }
     pub fn highshelf(
-        cutoff_hz: f32,
-        gain_db: f32,
-        q_value: f32,
-        sample_rate_hz: f32,
+        cutoff_hz: f64,
+        gain_db: f64,
+        q_value: f64,
+        sample_rate_hz: f64,
     ) -> IIR2Coefficients {
         let cutoff_hz = cutoff_hz.min(sample_rate_hz * 0.5);
-        let a = 10.0f32.powf(gain_db / 40.0);
+        let a = 10.0f64.powf(gain_db / 40.0);
         let g = (PI * cutoff_hz / sample_rate_hz).tan() * a.sqrt();
         let k = 1.0 / q_value;
         let a1 = 1.0 / (1.0 + g * (g + k));
@@ -239,13 +239,13 @@ impl IIR2Coefficients {
         }
     }
     pub fn bell(
-        cutoff_hz: f32,
-        gain_db: f32,
-        q_value: f32,
-        sample_rate_hz: f32,
+        cutoff_hz: f64,
+        gain_db: f64,
+        q_value: f64,
+        sample_rate_hz: f64,
     ) -> IIR2Coefficients {
         let cutoff_hz = cutoff_hz.min(sample_rate_hz * 0.5);
-        let a = 10.0f32.powf(gain_db / 40.0);
+        let a = 10.0f64.powf(gain_db / 40.0);
         let g = (PI * cutoff_hz / sample_rate_hz).tan();
         let k = 1.0 / (q_value * a);
         let a1 = 1.0 / (1.0 + g * (g + k));
@@ -272,8 +272,8 @@ impl IIR2Coefficients {
 /// Internal states and coefficients of the SVF form
 #[derive(Copy, Clone, Debug)]
 pub struct IIR2 {
-    ic1eq: f32,
-    ic2eq: f32,
+    ic1eq: f64,
+    ic2eq: f64,
     pub coeffs: IIR2Coefficients,
 }
 
@@ -287,7 +287,7 @@ impl IIR2 {
         }
     }
 
-    pub fn process(&mut self, input_sample: f32) -> f32 {
+    pub fn process(&mut self, input_sample: f64) -> f64 {
         let v3 = input_sample - self.ic2eq;
         let v1 = self.coeffs.a1 * self.ic1eq + self.coeffs.a2 * v3;
         let v2 = self.ic2eq + self.coeffs.a2 * self.ic1eq + self.coeffs.a3 * v3;
@@ -306,13 +306,13 @@ impl IIR2 {
 mod tests {
     use super::*;
 
-    fn rand(x: f32) -> f32 {
+    fn rand(x: f64) -> f64 {
         ((x * 12.9898).sin() * 43758.5453).fract()
     }
 
     #[test]
     fn test_iir2() {
-        let mut audio: Vec<f32> = (0..1000).map(|x| rand(x as f32)).collect();
+        let mut audio: Vec<f64> = (0..1000).map(|x| rand(x as f64)).collect();
 
         let sample_rate_hz = 48000.0;
         let cutoff_hz = 1000.0;

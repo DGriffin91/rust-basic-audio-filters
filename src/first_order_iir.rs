@@ -1,22 +1,22 @@
-use std::f32::consts::{PI, TAU};
+use std::f64::consts::{PI, TAU};
 
 use num_complex::Complex;
 
 #[derive(Copy, Clone, Debug)]
 pub struct IIR1Coefficients {
-    pub a: f32,
-    pub g: f32,
-    pub a1: f32,
-    pub m0: f32,
-    pub m1: f32,
+    pub a: f64,
+    pub g: f64,
+    pub a1: f64,
+    pub m0: f64,
+    pub m1: f64,
 }
 
 impl IIR1Coefficients {
-    pub fn get_bode_sample(self, frequency_hz: f32, sample_rate_hz: f32) -> Complex<f32> {
+    pub fn get_bode_sample(self, frequency_hz: f64, sample_rate_hz: f64) -> Complex<f64> {
         //Use y.norm() for amplitude and y.arg().to_degrees() for phase. Add to combine phase.
 
         let z = -TAU * frequency_hz / sample_rate_hz;
-        let z = z.cos() + z.sin() * Complex::<f32>::new(0.0, 1.0);
+        let z = z.cos() + z.sin() * Complex::<f64>::new(0.0, 1.0);
 
         let denominator = self.g + z * (self.g - 1.0) + 1.0;
 
@@ -35,7 +35,7 @@ impl IIR1Coefficients {
         }
     }
 
-    pub fn lowpass(cutoff_hz: f32, _gain_db: f32, sample_rate_hz: f32) -> IIR1Coefficients {
+    pub fn lowpass(cutoff_hz: f64, _gain_db: f64, sample_rate_hz: f64) -> IIR1Coefficients {
         let cutoff_hz = cutoff_hz.min(sample_rate_hz * 0.5);
         let a = 1.0;
         let g = (PI * cutoff_hz / sample_rate_hz).tan();
@@ -45,7 +45,7 @@ impl IIR1Coefficients {
         IIR1Coefficients { a, g, a1, m0, m1 }
     }
 
-    pub fn highpass(cutoff_hz: f32, _gain_db: f32, sample_rate_hz: f32) -> IIR1Coefficients {
+    pub fn highpass(cutoff_hz: f64, _gain_db: f64, sample_rate_hz: f64) -> IIR1Coefficients {
         let cutoff_hz = cutoff_hz.min(sample_rate_hz * 0.5);
         let a = 1.0;
         let g = (PI * cutoff_hz / sample_rate_hz).tan();
@@ -55,7 +55,7 @@ impl IIR1Coefficients {
         IIR1Coefficients { a, g, a1, m0, m1 }
     }
 
-    pub fn allpass(cutoff_hz: f32, _gain_db: f32, sample_rate_hz: f32) -> IIR1Coefficients {
+    pub fn allpass(cutoff_hz: f64, _gain_db: f64, sample_rate_hz: f64) -> IIR1Coefficients {
         let cutoff_hz = cutoff_hz.min(sample_rate_hz * 0.5);
         let a = 1.0;
         let g = (PI * cutoff_hz / sample_rate_hz).tan();
@@ -65,9 +65,9 @@ impl IIR1Coefficients {
         IIR1Coefficients { a, g, a1, m0, m1 }
     }
 
-    pub fn lowshelf(cutoff_hz: f32, gain_db: f32, sample_rate_hz: f32) -> IIR1Coefficients {
+    pub fn lowshelf(cutoff_hz: f64, gain_db: f64, sample_rate_hz: f64) -> IIR1Coefficients {
         let cutoff_hz = cutoff_hz.min(sample_rate_hz * 0.5);
-        let a = 10.0f32.powf(gain_db / 20.0);
+        let a = 10.0f64.powf(gain_db / 20.0);
         let g = (PI * cutoff_hz / sample_rate_hz).tan() / (a).sqrt();
         let a1 = g / (1.0 + g);
         let m0 = 1.0;
@@ -75,9 +75,9 @@ impl IIR1Coefficients {
         IIR1Coefficients { a, g, a1, m0, m1 }
     }
 
-    pub fn highshelf(cutoff_hz: f32, gain_db: f32, sample_rate_hz: f32) -> IIR1Coefficients {
+    pub fn highshelf(cutoff_hz: f64, gain_db: f64, sample_rate_hz: f64) -> IIR1Coefficients {
         let cutoff_hz = cutoff_hz.min(sample_rate_hz * 0.5);
-        let a = 10.0f32.powf(gain_db / 20.0);
+        let a = 10.0f64.powf(gain_db / 20.0);
         let g = (PI * cutoff_hz / sample_rate_hz).tan() * (a).sqrt();
         let a1 = g / (1.0 + g);
         let m0 = a;
@@ -89,7 +89,7 @@ impl IIR1Coefficients {
 /// Internal states and coefficients of the SVF form
 #[derive(Copy, Clone, Debug)]
 pub struct IIR1 {
-    ic1eq: f32,
+    ic1eq: f64,
     pub coeffs: IIR1Coefficients,
 }
 
@@ -102,7 +102,7 @@ impl IIR1 {
         }
     }
 
-    pub fn process(&mut self, input_sample: f32) -> f32 {
+    pub fn process(&mut self, input_sample: f64) -> f64 {
         let v1 = self.coeffs.a1 * (input_sample - self.ic1eq);
         let v2 = v1 + self.ic1eq;
         self.ic1eq = v2 + v1;
@@ -119,13 +119,13 @@ impl IIR1 {
 mod tests {
     use super::*;
 
-    fn rand(x: f32) -> f32 {
+    fn rand(x: f64) -> f64 {
         ((x * 12.9898).sin() * 43758.5453).fract()
     }
 
     #[test]
     fn test_iir1() {
-        let mut audio: Vec<f32> = (0..1000).map(|x| rand(x as f32)).collect();
+        let mut audio: Vec<f64> = (0..1000).map(|x| rand(x as f64)).collect();
 
         let sample_rate_hz = 48000.0;
         let cutoff_hz = 1000.0;
