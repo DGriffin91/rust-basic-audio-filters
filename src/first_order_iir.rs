@@ -12,6 +12,7 @@ pub struct IIR1Coefficients {
 }
 
 impl IIR1Coefficients {
+    #[inline]
     pub fn get_bode_sample(self, frequency_hz: f64, sample_rate_hz: f64) -> Complex<f64> {
         //Use y.norm() for amplitude and y.arg().to_degrees() for phase. Add to combine phase.
 
@@ -35,6 +36,7 @@ impl IIR1Coefficients {
         }
     }
 
+    #[inline]
     pub fn lowpass(cutoff_hz: f64, _gain_db: f64, sample_rate_hz: f64) -> IIR1Coefficients {
         let cutoff_hz = cutoff_hz.min(sample_rate_hz * 0.5);
         let a = 1.0;
@@ -45,6 +47,7 @@ impl IIR1Coefficients {
         IIR1Coefficients { a, g, a1, m0, m1 }
     }
 
+    #[inline]
     pub fn highpass(cutoff_hz: f64, _gain_db: f64, sample_rate_hz: f64) -> IIR1Coefficients {
         let cutoff_hz = cutoff_hz.min(sample_rate_hz * 0.5);
         let a = 1.0;
@@ -55,6 +58,7 @@ impl IIR1Coefficients {
         IIR1Coefficients { a, g, a1, m0, m1 }
     }
 
+    #[inline]
     pub fn allpass(cutoff_hz: f64, _gain_db: f64, sample_rate_hz: f64) -> IIR1Coefficients {
         let cutoff_hz = cutoff_hz.min(sample_rate_hz * 0.5);
         let a = 1.0;
@@ -65,6 +69,7 @@ impl IIR1Coefficients {
         IIR1Coefficients { a, g, a1, m0, m1 }
     }
 
+    #[inline]
     pub fn lowshelf(cutoff_hz: f64, gain_db: f64, sample_rate_hz: f64) -> IIR1Coefficients {
         let cutoff_hz = cutoff_hz.min(sample_rate_hz * 0.5);
         let a = 10.0f64.powf(gain_db / 20.0);
@@ -75,6 +80,7 @@ impl IIR1Coefficients {
         IIR1Coefficients { a, g, a1, m0, m1 }
     }
 
+    #[inline]
     pub fn highshelf(cutoff_hz: f64, gain_db: f64, sample_rate_hz: f64) -> IIR1Coefficients {
         let cutoff_hz = cutoff_hz.min(sample_rate_hz * 0.5);
         let a = 10.0f64.powf(gain_db / 20.0);
@@ -95,6 +101,7 @@ pub struct IIR1 {
 
 impl IIR1 {
     /// Creates a SVF from a set of filter coefficients
+    #[inline]
     pub fn from(coefficients: IIR1Coefficients) -> Self {
         IIR1 {
             ic1eq: 0.0,
@@ -102,6 +109,7 @@ impl IIR1 {
         }
     }
 
+    #[inline]
     pub fn process(&mut self, input_sample: f64) -> f64 {
         let v1 = self.coeffs.a1 * (input_sample - self.ic1eq);
         let v2 = v1 + self.ic1eq;
@@ -110,6 +118,7 @@ impl IIR1 {
         self.coeffs.m0 * input_sample + self.coeffs.m1 * v2
     }
 
+    #[inline]
     pub fn update(&mut self, new_coefficients: IIR1Coefficients) {
         self.coeffs = new_coefficients;
     }
@@ -139,6 +148,6 @@ mod tests {
             audio[i] = filter.process(audio[i]);
         }
 
-        assert_eq!(audio[500], -0.4137441)
+        assert_eq!(audio[500], -0.9407069884176158)
     }
 }
